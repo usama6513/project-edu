@@ -143,15 +143,37 @@ export default function ScholarshipsPage() {
             ))}
           </select>
           <select value={degreeLevel} onChange={(e) => { setDegreeLevel(e.target.value); setPage(1); }} className="input-field">
-            <option value="">All Degree Levels</option>
-            <option value="Associate">Associate Degree</option>
-            <option value="Bachelor">Bachelor</option>
-            <option value="Master">Master</option>
-            <option value="MBA">MBA</option>
-            <option value="PhD">PhD</option>
-            <option value="Diploma">Diploma</option>
-            <option value="Certificate">Certificate</option>
-            <option value="Short Course">Short Course</option>
+            <option value="">All Programs</option>
+            <optgroup label="Undergraduate">
+              <option value="Intermediate">Intermediate (FSc/FA/ICS)</option>
+              <option value="Bachelor">Bachelor (BA/BSc/BS)</option>
+              <option value="MBBS">MBBS</option>
+              <option value="BDS">BDS</option>
+              <option value="BBA">BBA</option>
+              <option value="LLB">LLB</option>
+              <option value="BE/BSc Engineering">Engineering (BE/BSc)</option>
+              <option value="Pharm.D">Pharm.D</option>
+              <option value="B.Arch">B.Arch</option>
+              <option value="BFA">BFA (Fine Arts)</option>
+              <option value="BS Computer Science">BS Computer Science</option>
+              <option value="BS IT">BS IT</option>
+              <option value="BSc Agriculture">BSc Agriculture</option>
+              <option value="Nursing">Nursing</option>
+              <option value="Diploma">Diploma</option>
+            </optgroup>
+            <optgroup label="Graduate">
+              <option value="Master">Master (MA/MSc/MS)</option>
+              <option value="MBA">MBA</option>
+              <option value="MFA">MFA</option>
+              <option value="M.Arch">M.Arch</option>
+              <option value="ME/MSc Engineering">ME/MSc Engineering</option>
+              <option value="MS Computer Science">MS Computer Science</option>
+              <option value="MSc Agriculture">MSc Agriculture</option>
+              <option value="M.Phil Pharmacy">M.Phil Pharmacy</option>
+            </optgroup>
+            <optgroup label="Doctoral">
+              <option value="PhD">PhD</option>
+            </optgroup>
           </select>
           <button onClick={() => { setPage(1); fetchScholarships(); }} className="btn-primary flex items-center justify-center gap-2">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
