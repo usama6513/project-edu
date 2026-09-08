@@ -38,6 +38,8 @@ interface ScanResult {
   domainInfo?: DomainInfo;
   indicators: Indicator[];
   analysis: string;
+  analysisUrdu?: string;
+  analysisRomanUrdu?: string;
   actions?: string[];
   realWorldContext?: string;
   pageExists?: boolean;
@@ -89,6 +91,7 @@ export default function CheckUrlPage() {
   const [result, setResult] = useState<ScanResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [feedbackGiven, setFeedbackGiven] = useState(false);
+  const [analysisLang, setAnalysisLang] = useState<'en' | 'ur' | 'roman'>('en');
 
   const getRiskColor = (level: string) => {
     switch (level?.toLowerCase()) {
@@ -167,6 +170,8 @@ export default function CheckUrlPage() {
           : undefined,
         indicators: Array.isArray(payload.indicators) ? payload.indicators : [],
         analysis: typeof payload.analysis === 'string' ? payload.analysis : (explanationObj?.explanation || ''),
+        analysisUrdu: explanationObj?.explanationUrdu || undefined,
+        analysisRomanUrdu: explanationObj?.explanationRomanUrdu || undefined,
         actions: explanationObj?.recommendedActions || [],
         realWorldContext: explanationObj?.realWorldContext || undefined,
         pageExists: payload.pageExists,
@@ -478,8 +483,38 @@ export default function CheckUrlPage() {
 
             {result.analysis && (
               <div className="bg-white/5 rounded-lg p-4">
-                <h3 className="text-sm font-semibold text-gray-100 mb-1">AI Analysis</h3>
-                <p className="text-sm text-gray-400 whitespace-pre-wrap">{result.analysis}</p>
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-semibold text-gray-100">AI Analysis</h3>
+                  <div className="flex gap-1">
+                    <button
+                      onClick={() => setAnalysisLang('en')}
+                      className={`text-xs px-2 py-0.5 rounded transition-colors ${analysisLang === 'en' ? 'bg-blue-500/20 text-blue-400' : 'text-gray-500 hover:text-gray-300'}`}
+                    >
+                      English
+                    </button>
+                    {result.analysisUrdu && (
+                      <button
+                        onClick={() => setAnalysisLang('ur')}
+                        className={`text-xs px-2 py-0.5 rounded transition-colors ${analysisLang === 'ur' ? 'bg-blue-500/20 text-blue-400' : 'text-gray-500 hover:text-gray-300'}`}
+                      >
+                        اردو
+                      </button>
+                    )}
+                    {result.analysisRomanUrdu && (
+                      <button
+                        onClick={() => setAnalysisLang('roman')}
+                        className={`text-xs px-2 py-0.5 rounded transition-colors ${analysisLang === 'roman' ? 'bg-blue-500/20 text-blue-400' : 'text-gray-500 hover:text-gray-300'}`}
+                      >
+                        Roman Urdu
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <p className={`text-sm text-gray-400 whitespace-pre-wrap ${analysisLang === 'ur' ? 'font-nastaliq text-right leading-7' : ''}`}>
+                  {analysisLang === 'en' && result.analysis}
+                  {analysisLang === 'ur' && result.analysisUrdu}
+                  {analysisLang === 'roman' && result.analysisRomanUrdu}
+                </p>
               </div>
             )}
 

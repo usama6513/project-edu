@@ -37,6 +37,8 @@ export interface UrlAnalysisResult {
   riskScore: number;
   riskLevel: 'safe' | 'low' | 'medium' | 'high' | 'critical';
   analysis: string;
+  analysisUrdu?: string;
+  analysisRomanUrdu?: string;
   contentAnalysis?: ContentAnalysis;
   pageExists: boolean;
   sslIssuer?: string;
@@ -302,6 +304,8 @@ export class UrlAnalyzer {
     riskScore = aiVerdict.riskScore;
     riskLevel = aiVerdict.riskLevel;
     analysis = aiVerdict.explanation || `URL analyzed with ${indicators.length} indicator(s). Risk level: ${riskLevel}`;
+    const analysisUrdu = aiVerdict.explanationUrdu || undefined;
+    const analysisRomanUrdu = aiVerdict.explanationRomanUrdu || undefined;
 
     // DETERMINISTIC RISK FLOOR — hard evidence overrides AI leniency
     // AI can be too forgiving when page is empty, but DNS failure + brand lookalike = definite threat
@@ -324,6 +328,8 @@ export class UrlAnalyzer {
       riskScore,
       riskLevel,
       analysis,
+      analysisUrdu,
+      analysisRomanUrdu,
       contentAnalysis,
       pageExists,
       sslIssuer,

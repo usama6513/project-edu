@@ -252,6 +252,8 @@ export class FraudService {
     const complaintPath = getComplaintPathForType(scamType);
     const aiExplanation = {
       explanation: analysis.analysis,
+      explanationUrdu: analysis.analysisUrdu,
+      explanationRomanUrdu: analysis.analysisRomanUrdu,
       recommendedActions: analysis.riskScore > 40
         ? ['Do not visit this URL', 'Do not enter personal information', 'Verify the domain through official channels']
         : ['Exercise normal caution'],
