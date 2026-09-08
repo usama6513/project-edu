@@ -70,6 +70,16 @@ interface UniversityDetail {
   admissionRequirements: AdmissionRequirement[];
   campuses: Campus[];
   departments: Department[];
+  // AI Knowledge Fields
+  admissionProcess: string | null;
+  admissionDates: string | null;
+  feeRange: string | null;
+  closingMerit: string | null;
+  entryTestDetails: string | null;
+  examSystem: string | null;
+  scholarshipsOffered: string | null;
+  supplyPolicy: string | null;
+  isOpenMerit: boolean | null;
 }
 
 const TYPE_COLORS: Record<string, string> = {
@@ -89,7 +99,7 @@ const DEGREE_LABELS: Record<string, string> = {
   diploma: 'Diploma',
 };
 
-type TabKey = 'courses' | 'admissions' | 'rankings' | 'campuses';
+type TabKey = 'courses' | 'admissions' | 'admission-info' | 'rankings' | 'campuses';
 
 function buildUniversitySystemMessage(uni: UniversityDetail): string {
   const lines: string[] = [];
@@ -315,6 +325,25 @@ function buildUniversitySystemMessage(uni: UniversityDetail): string {
   if (!hasAdmissions) lines.push('- MISSING: Admission data — use TRAINING KNOWLEDGE to answer admission questions.');
   lines.push('');
 
+  // --- AI KNOWLEDGE FIELDS (from database) ---
+  const hasAIFields = uni.admissionProcess || uni.admissionDates || uni.feeRange || uni.closingMerit || uni.entryTestDetails || uni.examSystem || uni.scholarshipsOffered || uni.supplyPolicy;
+  if (hasAIFields) {
+    lines.push('## UNIVERSITY-SPECIFIC KNOWLEDGE (from official data)');
+    if (uni.examSystem) lines.push(`- **Exam System**: ${uni.examSystem}-based`);
+    if (uni.isOpenMerit !== null) lines.push(`- **Open Merit**: ${uni.isOpenMerit ? 'Yes — open merit admissions available' : 'No — merit-based only'}`);
+    if (uni.admissionProcess) lines.push(`- **Admission Process**: ${uni.admissionProcess}`);
+    if (uni.admissionDates) lines.push(`- **Admission Schedule**: ${uni.admissionDates}`);
+    if (uni.entryTestDetails) lines.push(`- **Entry Test**: ${uni.entryTestDetails}`);
+    if (uni.closingMerit) lines.push(`- **Closing Merit**: ${uni.closingMerit}`);
+    if (uni.feeRange) lines.push(`- **Fee Range**: ${uni.feeRange}`);
+    if (uni.scholarshipsOffered) lines.push(`- **Scholarships**: ${uni.scholarshipsOffered}`);
+    if (uni.supplyPolicy) lines.push(`- **Supply Policy**: ${uni.supplyPolicy}`);
+    lines.push('');
+  } else {
+    lines.push('- NOTE: No university-specific admission/fee data in database. Use TRAINING KNOWLEDGE confidently for all admission, merit, fee, and entry test questions.');
+    lines.push('');
+  }
+
   return lines.join('\n');
 }
 
@@ -389,11 +418,17 @@ export default function UniversityDetailPage() {
   const mainCampus = uni.campuses?.find(c => c.isMain);
   const subCampuses = uni.campuses?.filter(c => !c.isMain) || [];
 
+  const hasAdmissionInfo = uni.admissionProcess || uni.admissionDates || uni.feeRange || uni.closingMerit || uni.entryTestDetails || uni.examSystem || uni.scholarshipsOffered || uni.supplyPolicy;
+  const admissionInfoCount = [uni.admissionProcess, uni.admissionDates, uni.feeRange, uni.closingMerit, uni.entryTestDetails, uni.examSystem, uni.scholarshipsOffered, uni.supplyPolicy].filter(Boolean).length;
+
   const tabs: { key: TabKey; label: string; count: number }[] = [
     { key: 'courses', label: 'Programs', count: uni.courses?.length || 0 },
     { key: 'admissions', label: 'Admissions', count: uni.admissionRequirements?.length || 0 },
-    { key: 'rankings', label: 'Rankings', count: uni.rankings?.length || 0 },
   ];
+  if (hasAdmissionInfo) {
+    tabs.push({ key: 'admission-info', label: 'Admission Info', count: admissionInfoCount });
+  }
+  tabs.push({ key: 'rankings', label: 'Rankings', count: uni.rankings?.length || 0 });
   if (uni.campuses && uni.campuses.length > 0) {
     tabs.push({ key: 'campuses', label: 'Campuses', count: uni.campuses.length });
   }
@@ -552,6 +587,119 @@ export default function UniversityDetailPage() {
               </div>
             ))
           )}
+        </div>
+      )}
+
+      {/* Admission Info Tab - AI Knowledge Fields */}
+      {activeTab === 'admission-info' && (
+        <div className="space-y-4">
+          {/* Exam System & Shift Info */}
+          {uni.examSystem && (
+            <div className="card">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-lg">📝</span>
+                <h3 className="font-semibold text-gray-100">Exam System</h3>
+              </div>
+              <p className="text-sm text-gray-400 capitalize">{uni.examSystem}-based system</p>
+              {uni.isOpenMerit !== null && (
+                <div className="mt-2 flex items-center gap-2">
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${uni.isOpenMerit ? 'bg-green-500/10 text-green-400' : 'bg-orange-500/10 text-orange-400'}`}>
+                    {uni.isOpenMerit ? 'Open Merit' : 'Merit-Based Only'}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Admission Process */}
+          {uni.admissionProcess && (
+            <div className="card">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-lg">📋</span>
+                <h3 className="font-semibold text-gray-100">Admission Process</h3>
+              </div>
+              <div className="text-sm text-gray-400 whitespace-pre-line">{uni.admissionProcess}</div>
+            </div>
+          )}
+
+          {/* Admission Dates */}
+          {uni.admissionDates && (
+            <div className="card">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-lg">📅</span>
+                <h3 className="font-semibold text-gray-100">Admission Schedule</h3>
+              </div>
+              <p className="text-sm text-gray-400">{uni.admissionDates}</p>
+            </div>
+          )}
+
+          {/* Entry Test Details */}
+          {uni.entryTestDetails && (
+            <div className="card">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-lg">🎯</span>
+                <h3 className="font-semibold text-gray-100">Entry Test Details</h3>
+              </div>
+              <p className="text-sm text-gray-400">{uni.entryTestDetails}</p>
+            </div>
+          )}
+
+          {/* Closing Merit */}
+          {uni.closingMerit && (
+            <div className="card">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-lg">📊</span>
+                <h3 className="font-semibold text-gray-100">Closing Merit Percentages</h3>
+              </div>
+              <p className="text-sm text-gray-400">{uni.closingMerit}</p>
+            </div>
+          )}
+
+          {/* Fee Range */}
+          {uni.feeRange && (
+            <div className="card">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-lg">💰</span>
+                <h3 className="font-semibold text-gray-100">Fee Structure</h3>
+              </div>
+              <p className="text-sm text-gray-400">{uni.feeRange}</p>
+            </div>
+          )}
+
+          {/* Scholarships */}
+          {uni.scholarshipsOffered && (
+            <div className="card">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-lg">🎓</span>
+                <h3 className="font-semibold text-gray-100">Scholarships Offered</h3>
+              </div>
+              <p className="text-sm text-gray-400">{uni.scholarshipsOffered}</p>
+            </div>
+          )}
+
+          {/* Supply Policy */}
+          {uni.supplyPolicy && (
+            <div className="card">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-lg">⚠️</span>
+                <h3 className="font-semibold text-gray-100">Supply/Repeat Policy</h3>
+              </div>
+              <p className="text-sm text-gray-400">{uni.supplyPolicy}</p>
+            </div>
+          )}
+
+          {/* Disclaimer */}
+          <div className="card bg-amber-500/5 border border-amber-500/20">
+            <p className="text-xs text-amber-400/80">
+              ⚠️ This information is for guidance purposes. For the most current and accurate admission details, please visit the official university website or contact their admissions office.
+            </p>
+            {uni.website && (
+              <a href={uni.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 mt-2 text-xs text-blue-400 hover:text-blue-300">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                Visit Official Website
+              </a>
+            )}
+          </div>
         </div>
       )}
 
