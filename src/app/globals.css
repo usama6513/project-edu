@@ -13,6 +13,18 @@
     --color-success: #10b981;
     --color-surface: #0f172a;
     --color-background: #020617;
+    --sidebar-width: 260px;
+    --header-height: 64px;
+    --radius-card: 16px;
+    --radius-button: 10px;
+    --radius-input: 10px;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.15);
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   * {
@@ -36,11 +48,9 @@
     min-height: 100vh;
     color: #e2e8f0;
     background-image:
-      radial-gradient(at 20% 20%, rgba(59, 130, 246, 0.07) 0px, transparent 50%),
-      radial-gradient(at 80% 10%, rgba(6, 182, 212, 0.05) 0px, transparent 50%),
-      radial-gradient(at 50% 80%, rgba(16, 185, 129, 0.05) 0px, transparent 50%),
-      radial-gradient(at 10% 70%, rgba(139, 92, 246, 0.04) 0px, transparent 50%),
-      radial-gradient(at 90% 60%, rgba(244, 63, 94, 0.04) 0px, transparent 50%);
+      radial-gradient(at 20% 20%, rgba(59, 130, 246, 0.04) 0px, transparent 50%),
+      radial-gradient(at 80% 10%, rgba(6, 182, 212, 0.03) 0px, transparent 50%),
+      radial-gradient(at 50% 80%, rgba(16, 185, 129, 0.03) 0px, transparent 50%);
     background-attachment: fixed;
   }
 
@@ -52,31 +62,26 @@
 
 @layer components {
   .btn-primary {
-    @apply relative overflow-hidden text-white px-5 py-2.5 rounded-xl font-semibold shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100;
-    background: linear-gradient(135deg, #3b82f6, #2563eb, #06b6d4);
-    background-size: 200% 200%;
-    animation: gradientShift 3s ease infinite;
+    @apply relative overflow-hidden text-white px-5 py-2.5 rounded-[var(--radius-button)] font-semibold shadow-sm hover:shadow-md active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border: 1px solid rgba(59, 130, 246, 0.3);
   }
 
-  .btn-primary::before {
-    content: '';
-    @apply absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full;
-    transition: transform 0.5s;
-  }
-
-  .btn-primary:hover::before {
-    @apply translate-x-full;
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    border-color: rgba(96, 165, 250, 0.5);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
   }
 
   .btn-secondary {
-    @apply text-slate-200 px-5 py-2.5 rounded-xl font-semibold shadow-sm hover:shadow-md active:scale-[0.98] transition-all duration-300;
-    background: rgba(15, 23, 42, 0.8);
-    border: 1px solid rgba(148, 163, 184, 0.12);
+    @apply text-slate-200 px-5 py-2.5 rounded-[var(--radius-button)] font-medium shadow-sm hover:shadow-md active:scale-[0.98] transition-all;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(148, 163, 184, 0.15);
   }
 
   .btn-secondary:hover {
-    background: rgba(30, 41, 59, 0.9);
-    border-color: rgba(148, 163, 184, 0.25);
+    background: rgba(30, 41, 59, 0.8);
+    border-color: rgba(148, 163, 184, 0.3);
   }
 
   .btn-danger {
@@ -91,21 +96,20 @@
   }
 
   .input-field {
-    @apply w-full px-4 py-3 rounded-xl outline-none transition-all duration-300 placeholder:text-slate-500 text-white;
-    background: rgba(15, 23, 42, 0.7);
-    border: 1.5px solid rgba(148, 163, 184, 0.15);
-    backdrop-filter: blur(8px);
+    @apply w-full px-4 py-2.5 rounded-[var(--radius-input)] outline-none transition-all placeholder:text-slate-500 text-white;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(148, 163, 184, 0.12);
   }
 
   .input-field:hover {
-    border-color: rgba(148, 163, 184, 0.3);
-    background: rgba(15, 23, 42, 0.85);
+    border-color: rgba(148, 163, 184, 0.25);
+    background: rgba(15, 23, 42, 0.7);
   }
 
   .input-field:focus {
     border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), 0 4px 20px rgba(59, 130, 246, 0.08);
-    background: rgba(11, 17, 32, 0.95);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    background: rgba(11, 17, 32, 0.8);
   }
 
   /* Fix select option visibility: dark bg for dropdown options so light text is readable */
@@ -128,28 +132,28 @@
   .input-indigo:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), 0 4px 20px rgba(99, 102, 241, 0.08); }
 
   .card {
-    @apply rounded-2xl p-6 transition-all duration-500;
-    background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7));
+    @apply rounded-[var(--radius-card)] p-6 transition-all;
+    background: rgba(15, 23, 42, 0.6);
     border: 1px solid rgba(148, 163, 184, 0.08);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(8px);
   }
 
   .card:hover {
     border-color: rgba(148, 163, 184, 0.15);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   }
 
   .card-hover {
-    @apply rounded-2xl p-6 cursor-pointer;
-    background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7));
+    @apply rounded-[var(--radius-card)] p-6 cursor-pointer;
+    background: rgba(15, 23, 42, 0.6);
     border: 1px solid rgba(148, 163, 184, 0.08);
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all var(--transition-base);
   }
 
   .card-hover:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 30px rgba(59, 130, 246, 0.08);
-    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    border-color: rgba(59, 130, 246, 0.2);
   }
 
   .card-cyan:hover {
@@ -223,14 +227,14 @@
   }
 
   .stat-card {
-    @apply relative overflow-hidden rounded-2xl p-5 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-500;
-    background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7));
+    @apply relative overflow-hidden rounded-[var(--radius-card)] p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all;
+    background: rgba(15, 23, 42, 0.6);
     border: 1px solid rgba(148, 163, 184, 0.08);
   }
 
   .stat-card::before {
     content: '';
-    @apply absolute top-0 left-0 right-0 h-1;
+    @apply absolute top-0 left-0 right-0 h-px;
   }
 
   .stat-card::after {
@@ -256,25 +260,46 @@
   .stat-card-cyan::before { background: linear-gradient(90deg, #06b6d4, #2563eb); }
   .stat-card-cyan::after { background: radial-gradient(circle, #06b6d4, transparent); }
 
+  /* Professional divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.12), transparent);
+  }
+
+  /* Professional chip/tag */
+  .chip {
+    @apply inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium transition-colors;
+    background: rgba(148, 163, 184, 0.08);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    color: #94a3b8;
+  }
+
+  .chip:hover {
+    background: rgba(148, 163, 184, 0.12);
+    border-color: rgba(148, 163, 184, 0.2);
+  }
+
+  .chip-blue { background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+  .chip-green { background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); color: #34d399; }
+  .chip-amber { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+  .chip-rose { background: rgba(244, 63, 94, 0.1); border-color: rgba(244, 63, 94, 0.2); color: #fb7185; }
+  .chip-purple { background: rgba(139, 92, 246, 0.1); border-color: rgba(139, 92, 246, 0.2); color: #a78bfa; }
+
   .sidebar-link {
-    @apply flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-300;
+    @apply flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-all;
     background: transparent;
     color: #94a3b8;
   }
 
   .sidebar-link:hover {
-    background: #1e293b;
+    background: rgba(30, 41, 59, 0.6);
     color: #e2e8f0;
-    transform: translateX(4px);
   }
 
   .sidebar-link-active {
-    background: linear-gradient(135deg, #3b82f6, #2563eb, #06b6d4) !important;
-    background-size: 200% 200% !important;
-    animation: gradientShift 3s ease infinite;
-    color: white !important;
-    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
-    transform: translateX(4px);
+    background: rgba(59, 130, 246, 0.12) !important;
+    color: #60a5fa !important;
+    box-shadow: inset 2px 0 0 #3b82f6;
   }
 
   .sidebar-link-inactive {
@@ -565,16 +590,16 @@
 .orb {
   position: fixed;
   border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.35;
+  filter: blur(150px);
+  opacity: 0.15;
   pointer-events: none;
   z-index: 0;
-  animation: orbFloat 12s ease-in-out infinite;
+  animation: orbFloat 20s ease-in-out infinite;
 }
 
 .orb-1 {
-  width: 600px;
-  height: 600px;
+  width: 500px;
+  height: 500px;
   background: linear-gradient(135deg, #3b82f6, #8b5cf6);
   top: -200px;
   right: -200px;
@@ -582,39 +607,39 @@
 }
 
 .orb-2 {
-  width: 500px;
-  height: 500px;
+  width: 400px;
+  height: 400px;
   background: linear-gradient(135deg, #06b6d4, #2563eb);
   bottom: -150px;
   left: -150px;
-  animation-delay: 3s;
+  animation-delay: 5s;
 }
 
 .orb-3 {
-  width: 400px;
-  height: 400px;
+  width: 350px;
+  height: 350px;
   background: linear-gradient(135deg, #10b981, #14b8a6);
   top: 40%;
   left: 40%;
-  animation-delay: 6s;
+  animation-delay: 10s;
 }
 
 .orb-4 {
-  width: 350px;
-  height: 350px;
+  width: 300px;
+  height: 300px;
   background: linear-gradient(135deg, #f59e0b, #f97316);
   top: 20%;
   left: -100px;
-  animation-delay: 2s;
+  animation-delay: 3s;
 }
 
 .orb-5 {
-  width: 300px;
-  height: 300px;
+  width: 250px;
+  height: 250px;
   background: linear-gradient(135deg, #f43f5e, #ec4899);
   bottom: 20%;
   right: -80px;
-  animation-delay: 5s;
+  animation-delay: 7s;
 }
 
 @keyframes rainbowBorder {

@@ -31,13 +31,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="flex items-center justify-center min-h-screen relative overflow-hidden" style={{ background: '#020617' }}>
         <div className="orb orb-1" />
         <div className="orb orb-2" />
-        <div className="orb orb-3" />
         <div className="flex flex-col items-center gap-4 relative z-10">
           <div className="relative">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500/30" />
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-t-transparent border-t-blue-500 absolute top-0" />
+            <div className="animate-spin rounded-full h-10 w-10 border-2 border-blue-500/20" />
+            <div className="animate-spin rounded-full h-10 w-10 border-2 border-t-transparent border-t-blue-500 absolute top-0" />
           </div>
-          <span className="text-sm font-semibold gradient-text animate-pulse">Loading EduGuard AI...</span>
+          <span className="text-sm font-medium text-slate-400">Loading...</span>
         </div>
       </div>
     );
@@ -55,30 +54,27 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="flex min-h-screen relative" style={{ background: '#020617' }}>
       <div className="orb orb-1" />
       <div className="orb orb-2" />
-      <div className="orb orb-3" />
-      <div className="orb orb-4" />
-      <div className="orb orb-5" />
 
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
-      <aside className={`fixed md:sticky top-0 left-0 z-50 h-screen w-64 flex flex-col transform transition-transform duration-300 md:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`} style={{ background: 'rgba(11, 17, 32, 0.8)', borderRight: '1px solid rgba(148, 163, 184, 0.1)' }}>
-        <div className="p-4" style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.1)' }}>
+      <aside className={`fixed md:sticky top-0 left-0 z-50 h-screen w-[260px] flex flex-col transform transition-transform duration-300 md:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`} style={{ background: 'rgba(8, 13, 25, 0.95)', borderRight: '1px solid rgba(148, 163, 184, 0.08)', backdropFilter: 'blur(12px)' }}>
+        <div className="p-4" style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.08)' }}>
           <Link href="/education" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-xl gradient-bg flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:shadow-blue-500/50 transition-all duration-300 group-hover:scale-110">
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center shadow-sm" style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)' }}>
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
             </div>
             <div>
-              <span className="text-base font-bold gradient-text">EduGuard AI</span>
-              <p className="text-[10px] font-medium -mt-0.5 text-cyan-400">Education & Security Platform</p>
+              <span className="text-sm font-bold text-white">EduGuard AI</span>
+              <p className="text-[10px] font-medium -mt-0.5 text-slate-500">Education & Security</p>
             </div>
           </Link>
         </div>
 
-        <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
+        <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
           {navItems.map((item) => {
             const active = isActive(item.href);
             return (
@@ -88,32 +84,31 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 onClick={() => setSidebarOpen(false)}
                 className={`sidebar-link ${active ? 'sidebar-link-active' : 'sidebar-link-inactive'}`}
               >
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 ${active ? 'bg-white/20' : `bg-gradient-to-br ${item.bg}`}`}>
-                  <svg className={`w-4 h-4 ${active ? 'text-white' : 'text-white/80'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${active ? 'bg-blue-500/15' : `bg-gradient-to-br ${item.bg}`}`}>
+                  <svg className={`w-4 h-4 ${active ? 'text-blue-400' : 'text-white/70'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={item.icon} />
                   </svg>
                 </div>
-                <span className={`text-sm font-medium bg-gradient-to-r ${item.labelGradient} bg-clip-text text-transparent`}>{item.label}</span>
+                <span className={`text-sm ${active ? 'text-blue-400 font-semibold' : 'text-slate-400 font-medium'}`}>{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        <div className="p-2" style={{ borderTop: '1px solid rgba(148, 163, 184, 0.1)' }}>
+        <div className="p-3" style={{ borderTop: '1px solid rgba(148, 163, 184, 0.08)' }}>
           {user.role === 'admin' && (
             <Link
               href="/admin"
               onClick={() => setSidebarOpen(false)}
-              className={`sidebar-link mb-1 ${pathname.startsWith('/admin') ? 'text-white shadow-lg shadow-amber-500/30' : 'text-cyan-400 hover:text-cyan-300'}`}
-              style={pathname.startsWith('/admin') ? { background: 'linear-gradient(135deg, #f59e0b, #f97316, #ef4444)', backgroundSize: '200% 200%', animation: 'gradientShift 3s ease infinite' } : {}}
+              className={`sidebar-link mb-1 ${pathname.startsWith('/admin') ? 'sidebar-link-active' : 'text-slate-400 hover:text-slate-200'}`}
             >
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'rgba(30, 41, 59, 0.5)' }}>
-                <svg className="w-4 h-4" style={{ color: '#fbbf24' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: pathname.startsWith('/admin') ? 'rgba(245, 158, 11, 0.12)' : 'rgba(30, 41, 59, 0.5)' }}>
+                <svg className="w-4 h-4" style={{ color: pathname.startsWith('/admin') ? '#fbbf24' : '#94a3b8' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
-               <span className="bg-gradient-to-r from-rose-400 to-pink-400 bg-clip-text text-transparent">Admin Panel</span>
+               <span className="text-sm text-slate-400 font-medium">Admin Panel</span>
             </Link>
           )}
 
@@ -125,20 +120,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Profile</span>
+            <span className="text-sm text-slate-400 font-medium">Profile</span>
           </Link>
 
-          <div className="mt-2 p-3 rounded-xl" style={{ background: 'rgba(11, 17, 32, 0.8)', border: '1px solid rgba(148, 163, 184, 0.1)' }}>
+          <div className="mt-3 p-3 rounded-lg" style={{ background: 'rgba(15, 23, 42, 0.5)', border: '1px solid rgba(148, 163, 184, 0.08)' }}>
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center shadow-sm shadow-blue-500/20">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)' }}>
                 <span className="text-xs font-bold text-white">{user.name.charAt(0).toUpperCase()}</span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold gradient-text truncate">{user.name}</p>
-                <p className="text-[11px] truncate text-cyan-400">{user.email}</p>
+                <p className="text-sm font-semibold text-white truncate">{user.name}</p>
+                <p className="text-[11px] truncate text-slate-500">{user.email}</p>
               </div>
             </div>
-            <button onClick={() => logout()} className="w-full mt-2 flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200">
+            <button onClick={() => logout()} className="w-full mt-2 flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-400 hover:text-red-400 hover:bg-red-500/5 rounded-md transition-all">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
@@ -149,13 +144,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </aside>
 
       <div className="flex-1 min-w-0 relative z-10">
-        <div className="sticky top-0 z-30 md:hidden flex items-center gap-3 p-3" style={{ background: 'rgba(11, 17, 32, 0.8)', borderBottom: '1px solid rgba(148, 163, 184, 0.1)' }}>
-          <button onClick={() => setSidebarOpen(true)} className="p-2 rounded-lg hover:bg-white/10 transition-all duration-200">
-            <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        <div className="sticky top-0 z-30 md:hidden flex items-center gap-3 px-4 h-14" style={{ background: 'rgba(8, 13, 25, 0.95)', borderBottom: '1px solid rgba(148, 163, 184, 0.08)', backdropFilter: 'blur(12px)' }}>
+          <button onClick={() => setSidebarOpen(true)} className="p-2 rounded-lg hover:bg-white/5 transition-all">
+            <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <span className="text-base font-bold gradient-text">EduGuard AI</span>
+          <span className="text-sm font-bold text-white">EduGuard AI</span>
         </div>
 
         <main className="p-4 md:p-6 lg:p-8 overflow-auto">

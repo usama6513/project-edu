@@ -42,11 +42,7 @@ export class CourseService {
 
     if (field) {
       conditions.push({
-        OR: [
-          { name: { contains: field } },
-          { description: { contains: field } },
-          { degree: { contains: field } },
-        ],
+        department: { equals: field },
       });
     }
 

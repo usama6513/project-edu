@@ -8,6 +8,7 @@ interface Course {
   id: string;
   name: string;
   degree: string;
+  department: string | null;
   duration: string | null;
   language: string | null;
   description: string | null;
@@ -143,7 +144,7 @@ export default function CoursesPage() {
           ...c,
           university: { id: universityId, name: res.data.university.name, city: res.data.university.city, country: country },
         }));
-        if (department) filtered = filtered.filter((c) => c.name.toLowerCase().includes(department.toLowerCase()));
+        if (department) filtered = filtered.filter((c) => c.department === department);
         if (program) filtered = filtered.filter((c) => c.degree === program);
         setCourses(filtered.slice((page - 1) * 20, page * 20));
         setPagination({ total: filtered.length, page, limit: 20, totalPages: Math.ceil(filtered.length / 20) });

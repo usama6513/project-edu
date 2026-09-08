@@ -104,33 +104,33 @@ const COUNTRIES = [
 ];
 
 const STRENGTH_COLORS: Record<string, string> = {
-  strong: 'bg-green-500/10 text-green-400 border-green-500/20',
-  possible: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
-  needs_verification: 'bg-white/5 text-gray-400 border-white/10',
+  strong: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+  possible: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+  needs_verification: 'bg-slate-500/5 text-slate-400 border-slate-500/10',
   not_eligible: 'bg-red-500/10 text-red-400 border-red-500/20',
 };
 
 const DEG_COLORS: Record<string, string> = {
   bachelor: 'bg-blue-500/10 text-blue-400',
-  master: 'bg-purple-500/10 text-purple-400',
+  master: 'bg-violet-500/10 text-violet-400',
   phd: 'bg-rose-500/10 text-rose-400',
-  diploma: 'bg-yellow-500/10 text-yellow-400',
-  certificate: 'bg-white/5 text-gray-300',
-  intermediate: 'bg-green-500/10 text-green-400',
+  diploma: 'bg-amber-500/10 text-amber-400',
+  certificate: 'bg-slate-500/5 text-slate-300',
+  intermediate: 'bg-emerald-500/10 text-emerald-400',
 };
 
 function scoreColor(s: number) {
-  if (s >= 80) return 'text-green-600';
-  if (s >= 60) return 'text-blue-600';
-  if (s >= 40) return 'text-yellow-600';
-  return 'text-gray-500';
+  if (s >= 80) return 'text-emerald-400';
+  if (s >= 60) return 'text-blue-400';
+  if (s >= 40) return 'text-amber-400';
+  return 'text-slate-500';
 }
 
 function scoreBg(s: number) {
-  if (s >= 80) return 'bg-green-500';
+  if (s >= 80) return 'bg-emerald-500';
   if (s >= 60) return 'bg-blue-500';
-  if (s >= 40) return 'bg-yellow-500';
-  return 'bg-gray-400';
+  if (s >= 40) return 'bg-amber-500';
+  return 'bg-slate-500';
 }
 
 function renderAiSummary(text: string) {
@@ -142,7 +142,7 @@ function renderAiSummary(text: string) {
     if (isHeading) {
       const headingText = trimmed.slice(2, -2);
       return (
-        <p key={i} className="font-bold text-gray-100 mt-3 mb-1 text-sm">
+        <p key={i} className="font-semibold text-white mt-3 mb-1 text-sm">
           {headingText}
         </p>
       );
@@ -151,14 +151,14 @@ function renderAiSummary(text: string) {
     if (isBullet) {
       const content = trimmed.slice(2);
       return (
-        <p key={i} className="text-sm text-gray-300 ml-3 flex gap-2 my-0.5">
-          <span className="text-indigo-400 font-bold flex-shrink-0">&rsaquo;</span>
+        <p key={i} className="text-sm text-slate-300 ml-3 flex gap-2 my-0.5">
+          <span className="text-blue-400 font-bold flex-shrink-0">&rsaquo;</span>
           <span>{renderBoldText(content)}</span>
         </p>
       );
     }
     return (
-      <p key={i} className="text-sm text-gray-300 my-0.5">
+      <p key={i} className="text-sm text-slate-300 my-0.5">
         {renderBoldText(trimmed)}
       </p>
     );
@@ -169,7 +169,7 @@ function renderBoldText(text: string) {
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={i} className="font-semibold text-gray-100">{part.slice(2, -2)}</strong>;
+      return <strong key={i} className="font-semibold text-white">{part.slice(2, -2)}</strong>;
     }
     return part;
   });
@@ -192,11 +192,11 @@ function StrengthBadge({ strength }: { strength: string }) {
 function ScoreDisplay({ score }: { score: number }) {
   return (
     <div className="ml-4 text-right flex-shrink-0">
-      <div className={`text-2xl font-bold ${scoreColor(score)}`}>{score}%</div>
-      <div className="w-16 h-1.5 bg-white/5 rounded-full mt-1 overflow-hidden">
-        <div className={`h-full rounded-full ${scoreBg(score)}`} style={{ width: `${score}%` }} />
+      <div className={`text-xl font-bold tabular-nums ${scoreColor(score)}`}>{score}%</div>
+      <div className="w-14 h-1 bg-slate-800 rounded-full mt-1.5 overflow-hidden">
+        <div className={`h-full rounded-full transition-all duration-500 ${scoreBg(score)}`} style={{ width: `${score}%` }} />
       </div>
-      <p className="text-xs text-gray-400 mt-1">match</p>
+      <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-wider font-medium">match</p>
     </div>
   );
 }
@@ -250,56 +250,56 @@ export default function RecommendationsPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <Link href="/education" className="inline-flex items-center gap-1 text-sm text-blue-400 hover:text-blue-300 mb-3">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-          Back to Education Center
+        <Link href="/education" className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-white mb-3 transition-colors">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" /></svg>
+          Back to Education
         </Link>
-        <h1 className="text-2xl font-bold text-gray-100">AI Recommendations</h1>
-        <p className="text-gray-500 mt-1">Get personalized university, course, and scholarship recommendations</p>
+        <h1 className="text-xl font-bold text-white">AI Recommendations</h1>
+        <p className="text-sm text-slate-500 mt-1">Get personalized university, course, and scholarship recommendations</p>
       </div>
 
       <div className="card">
-        <h2 className="text-lg font-semibold text-gray-100 mb-4">Your Preferences</h2>
+        <h2 className="text-base font-semibold text-white mb-4">Your Preferences</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Field of Study</label>
-            <select value={field} onChange={(e) => setField(e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/[0.03] text-gray-100 px-3 py-2 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500">
+            <label className="block text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wider">Field of Study</label>
+            <select value={field} onChange={(e) => setField(e.target.value)} className="input-field text-sm">
               <option value="">Any field</option>
               {FIELDS.map((f) => (<option key={f} value={f}>{f}</option>))}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Country</label>
-            <select value={country} onChange={(e) => { setCountry(e.target.value); setCity(''); }} className="w-full rounded-lg border border-white/10 bg-white/[0.03] text-gray-100 px-3 py-2 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500">
+            <label className="block text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wider">Country</label>
+            <select value={country} onChange={(e) => { setCountry(e.target.value); setCity(''); }} className="input-field text-sm">
               <option value="">Any country</option>
               {COUNTRIES.map((c) => (<option key={c.name} value={c.name}>{c.name}</option>))}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">City</label>
-            <input type="text" value={city} onChange={(e) => setCity(e.target.value)} placeholder={country ? `e.g. ${country === 'Pakistan' ? 'Lahore, Karachi' : 'London, Berlin'}` : 'Any city'} className="w-full rounded-lg border border-white/10 bg-white/[0.03] text-gray-100 px-3 py-2 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500" />
+            <label className="block text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wider">City</label>
+            <input type="text" value={city} onChange={(e) => setCity(e.target.value)} placeholder={country ? `e.g. ${country === 'Pakistan' ? 'Lahore, Karachi' : 'London, Berlin'}` : 'Any city'} className="input-field text-sm" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Degree Level</label>
-            <select value={degreeLevel} onChange={(e) => setDegreeLevel(e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/[0.03] text-gray-100 px-3 py-2 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500">
+            <label className="block text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wider">Degree Level</label>
+            <select value={degreeLevel} onChange={(e) => setDegreeLevel(e.target.value)} className="input-field text-sm">
               <option value="">Any level</option>
               {DEGREES.map((d) => (<option key={d.value} value={d.value}>{d.label}</option>))}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Max Budget ({cur.code}/year)</label>
+            <label className="block text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wider">Max Budget ({cur.code}/year)</label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">{cur.symbol}</span>
-              <input type="number" value={budget} onChange={(e) => setBudget(e.target.value)} placeholder={country === 'Pakistan' ? 'e.g. 500000' : 'e.g. 15000'} className="w-full rounded-lg border border-white/10 bg-white/[0.03] text-gray-100 pl-8 pr-3 py-2 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500" />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">{cur.symbol}</span>
+              <input type="number" value={budget} onChange={(e) => setBudget(e.target.value)} placeholder={country === 'Pakistan' ? 'e.g. 500000' : 'e.g. 15000'} className="input-field text-sm pl-8" />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Career Goal</label>
-            <input type="text" value={careerGoal} onChange={(e) => setCareerGoal(e.target.value)} placeholder="e.g. Software Engineer, Doctor" className="w-full rounded-lg border border-white/10 bg-white/[0.03] text-gray-100 px-3 py-2 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500" />
+            <label className="block text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wider">Career Goal</label>
+            <input type="text" value={careerGoal} onChange={(e) => setCareerGoal(e.target.value)} placeholder="e.g. Software Engineer, Doctor" className="input-field text-sm" />
           </div>
         </div>
-        {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
-        <button onClick={handleSearch} disabled={loading} className="mt-4 px-6 py-2.5 bg-primary-600 text-white rounded-lg font-medium text-sm hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+        {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+        <button onClick={handleSearch} disabled={loading} className="btn-primary mt-4 text-sm">
           {loading ? 'Finding matches...' : 'Get Recommendations'}
         </button>
       </div>
@@ -307,27 +307,27 @@ export default function RecommendationsPage() {
       {result && (
         <>
           {result.aiSummary && (
-            <div className="relative overflow-hidden rounded-2xl border border-indigo-500/20 bg-gradient-to-br from-indigo-900/20 via-purple-900/20 to-pink-900/20 p-6 shadow-sm">
-              <div className="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-indigo-500/10 to-purple-500/10 blur-2xl" />
-              <div className="absolute -bottom-6 -left-6 h-24 w-24 rounded-full bg-gradient-to-tr from-pink-500/10 to-indigo-500/10 blur-2xl" />
-              <div className="relative flex items-start gap-4">
-                <div className="flex-shrink-0 h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                  <span className="text-white text-sm font-extrabold tracking-tighter">AI</span>
+            <div className="rounded-xl border border-blue-500/15 bg-blue-950/20 p-5">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 h-8 w-8 rounded-lg bg-blue-500/15 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-extrabold text-gray-100 mb-2 tracking-tight text-base">AI-Powered Insights</h3>
-                  <p className="text-sm text-gray-300 leading-relaxed">{renderAiSummary(result.aiSummary)}</p>
+                  <h3 className="font-semibold text-white mb-2 text-sm">AI Insights</h3>
+                  <p className="text-sm text-slate-300 leading-relaxed">{renderAiSummary(result.aiSummary)}</p>
                 </div>
               </div>
             </div>
           )}
 
-          <div className="flex gap-1 border-b border-white/10">
+          <div className="flex gap-0.5 border-b border-slate-800">
             {tabs.map((tab) => (
-              <button key={tab.key} onClick={() => setActiveTab(tab.key)} className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${activeTab === tab.key ? 'border-primary-600 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-300'}`}>
+              <button key={tab.key} onClick={() => setActiveTab(tab.key)} className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${activeTab === tab.key ? 'border-blue-500 text-blue-400' : 'border-transparent text-slate-500 hover:text-slate-300'}`}>
                 {tab.label}
                 {tab.count > 0 && (
-                  <span className={`ml-1.5 px-1.5 py-0.5 text-xs rounded-full ${activeTab === tab.key ? 'bg-primary-500/10 text-primary-400' : 'bg-white/5 text-gray-500'}`}>{tab.count}</span>
+                  <span className={`ml-1.5 px-1.5 py-0.5 text-xs rounded-md ${activeTab === tab.key ? 'bg-blue-500/10 text-blue-400' : 'bg-slate-800 text-slate-500'}`}>{tab.count}</span>
                 )}
               </button>
             ))}
@@ -426,9 +426,13 @@ export default function RecommendationsPage() {
 
       {!result && !loading && (
         <div className="card text-center py-12">
-          <span className="text-4xl">🎯</span>
-          <h3 className="text-lg font-semibold text-gray-100 mt-4">Find Your Perfect Match</h3>
-          <p className="text-sm text-gray-500 mt-2 max-w-md mx-auto">Tell us your preferences above and our AI will find the best universities, courses, and scholarships for you.</p>
+          <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mx-auto">
+            <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <h3 className="text-base font-semibold text-white mt-4">Find Your Perfect Match</h3>
+          <p className="text-sm text-slate-500 mt-2 max-w-md mx-auto">Tell us your preferences above and our AI will find the best universities, courses, and scholarships for you.</p>
         </div>
       )}
     </div>
