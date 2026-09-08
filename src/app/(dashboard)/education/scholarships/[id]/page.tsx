@@ -6,18 +6,24 @@ import { apiClient } from '@/lib/api-client';
 import { VerificationBadge } from '@/components/ui/verification-badge';
 
 interface ScholarshipDetail {
-  _id: string;
+  id: string;
   name: string;
   provider: string;
-  country: string;
-  amount: string;
-  description: string;
-  eligibilityRequirements: string[];
-  deadline: string;
-  applicationUrl: string;
-  fundingType: string;
-  degreeLevels: string[];
-  isVerified: boolean;
+  country: string | null;
+  category: string | null;
+  amount: number | null;
+  currency: string | null;
+  amountFrequency: string | null;
+  deadline: string | null;
+  description: string | null;
+  eligibilityCriteria: string | null;
+  applicationProcess: string | null;
+  documentsRequired: string | null;
+  contactInfo: string | null;
+  sourceUrl: string | null;
+  sourceName: string | null;
+  verificationStatus: string;
+  requirements: { id: string; requirementType: string; requirementValue: string }[];
 }
 
 export default function ScholarshipDetailPage() {
@@ -84,18 +90,18 @@ export default function ScholarshipDetailPage() {
             <p className="text-gray-400 mt-1">{scholarship.provider}</p>
             <p className="text-sm text-gray-500">{scholarship.country}</p>
           </div>
-          <VerificationBadge status={scholarship.isVerified ? 'verified' : 'unverified'} compact />
+          <VerificationBadge status={scholarship.verificationStatus === 'verified' ? 'verified' : 'unverified'} compact />
         </div>
-        {scholarship.amount && (
-          <p className="text-lg font-semibold text-secondary-700 mt-3">{scholarship.amount}</p>
+        {scholarship.amount && scholarship.currency && (
+          <p className="text-lg font-semibold text-secondary-700 mt-3">
+            {scholarship.currency} {Number(scholarship.amount).toLocaleString()}
+            {scholarship.amountFrequency === 'annual' ? '/year' : scholarship.amountFrequency === 'monthly' ? '/month' : scholarship.amountFrequency === 'one_time' ? ' (one-time)' : ''}
+          </p>
         )}
-        {scholarship.fundingType && (
-          <span className="text-xs bg-white/5 text-gray-300 px-2 py-0.5 rounded-full mt-2 inline-block">{scholarship.fundingType}</span>
-        )}
-        {scholarship.degreeLevels?.length > 0 && (
+        {scholarship.requirements?.filter(r => r.requirementType === 'degree_level' || r.requirementType === 'program_type').length > 0 && (
           <div className="flex flex-wrap gap-1 mt-3">
-            {scholarship.degreeLevels.map((l, i) => (
-              <span key={i} className="text-xs bg-primary-500/10 text-primary-400 px-2 py-0.5 rounded-full">{l}</span>
+            {scholarship.requirements.filter(r => r.requirementType === 'degree_level' || r.requirementType === 'program_type').map((r) => (
+              <span key={r.id} className="text-xs bg-primary-500/10 text-primary-400 px-2 py-0.5 rounded-full">{r.requirementValue}</span>
             ))}
           </div>
         )}
@@ -119,12 +125,24 @@ export default function ScholarshipDetailPage() {
         </div>
       )}
 
-      {scholarship.eligibilityRequirements?.length > 0 && (
+      {scholarship.eligibilityCriteria && (
         <div className="card">
-          <h2 className="font-semibold text-gray-100 mb-3">Eligibility Requirements</h2>
-          <ul className="list-disc list-inside space-y-1 text-sm text-gray-400">
-            {scholarship.eligibilityRequirements.map((r, i) => <li key={i}>{r}</li>)}
-          </ul>
+          <h2 className="font-semibold text-gray-100 mb-3">Eligibility Criteria</h2>
+          <p className="text-sm text-gray-400 whitespace-pre-line">{scholarship.eligibilityCriteria}</p>
+        </div>
+      )}
+
+      {scholarship.applicationProcess && (
+        <div className="card">
+          <h2 className="font-semibold text-gray-100 mb-3">Application Process</h2>
+          <p className="text-sm text-gray-400 whitespace-pre-line">{scholarship.applicationProcess}</p>
+        </div>
+      )}
+
+      {scholarship.documentsRequired && (
+        <div className="card">
+          <h2 className="font-semibold text-gray-100 mb-3">Documents Required</h2>
+          <p className="text-sm text-gray-400 whitespace-pre-line">{scholarship.documentsRequired}</p>
         </div>
       )}
 
@@ -132,9 +150,9 @@ export default function ScholarshipDetailPage() {
         <button onClick={handleSave} disabled={saving || saved} className="btn-primary">
           {saved ? 'Saved ✓' : saving ? 'Saving...' : 'Save Scholarship'}
         </button>
-        {scholarship.applicationUrl && (
+        {scholarship.sourceUrl && (
           <a
-            href={scholarship.applicationUrl}
+            href={scholarship.sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-secondary"
