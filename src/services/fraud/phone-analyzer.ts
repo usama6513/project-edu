@@ -791,12 +791,20 @@ export async function analyzePhoneNumber(input: string, liveData?: import('./pho
 
   const socialPresence = { possible: platforms.length > 0, platforms };
 
-  // Build recommendation from AI verdict
-  const recommendation = aiVerdict.recommendedActionsRomanUrdu?.[0] || (
-    riskLevel === 'critical' ? `HIGH RISK: This ${country.name} number has been flagged. Do NOT engage. Block and report to ${country.complaintAuthority}.`
-    : riskLevel === 'high' ? `SUSPICIOUS: This ${country.name} number shows red flags. Verify the sender before responding.`
-    : riskLevel === 'medium' ? `CAUTION: Some indicators suggest caution. Verify the sender identity before sharing personal information.`
+  // Build recommendation — when risk floor overrides AI, use risk-level-based recommendation
+  const floorOverrodeAI = floorScore > aiVerdict.riskScore;
+  const recommendation = floorOverrodeAI ? (
+    riskLevel === 'critical' ? `CRITICAL: This ${country.name} number is a KNOWN SCAMMER. Do NOT engage. Block and report to ${country.complaintAuthority}.`
+    : riskLevel === 'high' ? `HIGH RISK: This ${country.name} number shows strong red flags. Do NOT respond. Block and report to ${country.complaintAuthority}.`
+    : riskLevel === 'medium' ? `CAUTION: This ${country.name} number has suspicious indicators. Verify the sender before sharing personal information.`
     : `This ${country.name} number appears safe based on available data. Standard precautions apply — never share OTPs or PINs.`
+  ) : (
+    aiVerdict.recommendedActionsRomanUrdu?.[0] || (
+      riskLevel === 'critical' ? `CRITICAL: This ${country.name} number has been flagged. Do NOT engage. Block and report to ${country.complaintAuthority}.`
+      : riskLevel === 'high' ? `SUSPICIOUS: This ${country.name} number shows red flags. Verify the sender before responding.`
+      : riskLevel === 'medium' ? `CAUTION: Some indicators suggest caution. Verify the sender identity before sharing personal information.`
+      : `This ${country.name} number appears safe based on available data. Standard precautions apply — never share OTPs or PINs.`
+    )
   );
 
   // Complaint path from AI-determined scam type
