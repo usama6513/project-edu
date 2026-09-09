@@ -331,7 +331,7 @@ export default function CheckUrlPage() {
                     <div>
                       <span className="text-gray-500">Page Exists</span>
                       <p className="font-medium text-gray-100">
-                        {result.pageExists ? '✅ Yes — Page is live' : '❌ No — Page not found'}
+                        {result.pageExists ? '✅ Yes — Page is live' : '❌ Server unreachable — domain may not exist'}
                       </p>
                     </div>
                   )}

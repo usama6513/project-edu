@@ -70,6 +70,7 @@ const TRUSTED_DOMAINS = [
   // Pakistan-specific trusted domains
   'paklawsite.com', 'pakistanlawsite.com',
   'nust.edu.pk', 'lums.edu.pk', 'uet.edu.pk', 'pu.edu.pk', 'iub.edu.pk', 'fast.edu.pk',
+  'iba.edu.pk', 'bahria.edu.pk', 'comsats.edu.pk', 'nu.edu.pk', 'giki.edu.pk',
   'hec.gov.pk', 'sbp.gov.pk', 'fbr.gov.pk', 'nadra.gov.pk', 'psx.com.pk',
   'jazz.com.pk', 'zong4g.com', 'telenor.com.pk', 'ufone.com',
   'hbl.com', 'ubl.com.pk', 'mcbbank.com', 'mezanbank.com', 'alliedbank.com',
@@ -823,18 +824,21 @@ export class UrlAnalyzer {
       });
 
       responseTime = Date.now() - startTime;
-      pageExists = response.ok || [301, 302, 303, 307, 308].includes(response.status);
+      // Any HTTP response (even 403/500) means server/domain EXISTS.
+      // Only DNS failure (ENOTFOUND) or timeout means truly unreachable — handled in catch.
+      pageExists = true;
       finalUrl = response.url || url;
 
       // Extract SSL issuer from response headers if available
       const sslHeader = response.headers.get('x-ssl-cert-issuer');
       if (sslHeader) sslIssuer = sslHeader;
 
-      if (response.ok) {
+      // Try to read body from any response (some servers return content even with 403/500)
+      try {
         const text = await response.text();
         // Limit to first 100KB for analysis
         html = text.substring(0, 100000);
-      }
+      } catch { /* body may be empty or unreadable — that's OK */ }
     } catch (error: any) {
       const errorMsg = error?.message || '';
 
