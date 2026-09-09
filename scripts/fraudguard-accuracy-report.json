@@ -1,0 +1,645 @@
+{
+  "timestamp": "2026-09-09T01:51:58.555Z",
+  "totalTests": 50,
+  "accuracy": 100,
+  "detectionRate": 100,
+  "falsePositiveRate": 0,
+  "precision": 100,
+  "avgScanTimeMs": 8665,
+  "confusionMatrix": {
+    "truePositives": 25,
+    "falseNegatives": 0,
+    "trueNegatives": 25,
+    "falsePositives": 0
+  },
+  "results": [
+    {
+      "url": "https://google.com",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-tech",
+      "indicators": []
+    },
+    {
+      "url": "https://github.com",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-tech",
+      "indicators": []
+    },
+    {
+      "url": "https://microsoft.com",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-tech",
+      "indicators": []
+    },
+    {
+      "url": "https://apple.com",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-tech",
+      "indicators": []
+    },
+    {
+      "url": "https://amazon.com",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-tech",
+      "indicators": []
+    },
+    {
+      "url": "https://daraz.pk",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-pk",
+      "indicators": []
+    },
+    {
+      "url": "https://nust.edu.pk",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-pk",
+      "indicators": []
+    },
+    {
+      "url": "https://who.int",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-gov",
+      "indicators": []
+    },
+    {
+      "url": "https://wikipedia.org",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-general",
+      "indicators": []
+    },
+    {
+      "url": "https://hbl.com",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-bank",
+      "indicators": []
+    },
+    {
+      "url": "https://www.sbp.gov.pk",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-gov",
+      "indicators": []
+    },
+    {
+      "url": "https://youtube.com",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-tech",
+      "indicators": []
+    },
+    {
+      "url": "https://linkedin.com",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-tech",
+      "indicators": []
+    },
+    {
+      "url": "https://twitter.com",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-tech",
+      "indicators": []
+    },
+    {
+      "url": "https://www.bbc.com",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-media",
+      "indicators": []
+    },
+    {
+      "url": "https://www.dawn.com",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-media",
+      "indicators": []
+    },
+    {
+      "url": "https://www.reuters.com",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-media",
+      "indicators": []
+    },
+    {
+      "url": "https://www.coursera.org",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 5,
+      "correct": true,
+      "category": "trusted-edu",
+      "indicators": [
+        "DNS_NO_NS_RECORDS"
+      ]
+    },
+    {
+      "url": "https://www.khanacademy.org",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 5,
+      "correct": true,
+      "category": "trusted-edu",
+      "indicators": [
+        "DNS_NO_NS_RECORDS"
+      ]
+    },
+    {
+      "url": "https://www.netflix.com",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-tech",
+      "indicators": []
+    },
+    {
+      "url": "https://stackoverflow.com",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-tech",
+      "indicators": []
+    },
+    {
+      "url": "https://example.com",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 5,
+      "correct": true,
+      "category": "trusted-general",
+      "indicators": []
+    },
+    {
+      "url": "https://www.foodpanda.com.pk",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-pk",
+      "indicators": []
+    },
+    {
+      "url": "https://jazz.com.pk",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 0,
+      "correct": true,
+      "category": "trusted-pk",
+      "indicators": []
+    },
+    {
+      "url": "https://www.urdupoint.com",
+      "expected": "safe",
+      "actual": "safe",
+      "riskScore": 10,
+      "correct": true,
+      "category": "trusted-media",
+      "indicators": [
+        "DNS_NO_NS_RECORDS",
+        "EMPTY_PAGE"
+      ]
+    },
+    {
+      "url": "http://hbl-verify.xyz",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 85,
+      "correct": true,
+      "category": "phishing-bank",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "BRAND_IMPERSONATION",
+        "NO_HTTPS",
+        "PAGE_NOT_FOUND"
+      ]
+    },
+    {
+      "url": "http://hbl-online-secure.com",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 85,
+      "correct": true,
+      "category": "phishing-bank",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "DOMAIN_MIMIC",
+        "NO_HTTPS",
+        "PAGE_NOT_FOUND"
+      ]
+    },
+    {
+      "url": "http://ub1-pk-verify.net",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 85,
+      "correct": true,
+      "category": "phishing-bank",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "DOMAIN_MIMICRY",
+        "DNS_FAILURE",
+        "NO_HTTPS"
+      ]
+    },
+    {
+      "url": "http://jazzcash-verify.xyz",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 85,
+      "correct": true,
+      "category": "phishing-wallet",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "BRAND_IMPERSONATION",
+        "NO_HTTPS",
+        "PAGE_NOT_FOUND"
+      ]
+    },
+    {
+      "url": "http://easypaisa-login.com",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 85,
+      "correct": true,
+      "category": "phishing-wallet",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "BRAND_IMPERSONATION",
+        "NO_HTTPS",
+        "PAGE_NOT_FOUND"
+      ]
+    },
+    {
+      "url": "http://paypal-secure-verify.net",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 85,
+      "correct": true,
+      "category": "phishing-intl",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "DOMAIN_IMPERSONATION",
+        "NO_HTTPS",
+        "PAGE_NOT_FOUND"
+      ]
+    },
+    {
+      "url": "http://facebook-login-secure.xyz",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 85,
+      "correct": true,
+      "category": "phishing-social",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "DOMAIN_IMPERSONATION",
+        "NO_HTTPS",
+        "PAGE_NOT_FOUND"
+      ]
+    },
+    {
+      "url": "http://google-account-verify.com",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 85,
+      "correct": true,
+      "category": "phishing-tech",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "DOMAIN_YOUNG",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "BRAND_IMPERSONATION",
+        "NO_HTTPS",
+        "PAGE_NOT_FOUND"
+      ]
+    },
+    {
+      "url": "http://apple-id-secure.net",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 85,
+      "correct": true,
+      "category": "phishing-tech",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "BRAND_IMPERSONATION",
+        "NO_HTTPS",
+        "PAGE_NOT_FOUND"
+      ]
+    },
+    {
+      "url": "http://netflix-verify-account.xyz",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 85,
+      "correct": true,
+      "category": "phishing-tech",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "PHISHING_URL"
+      ]
+    },
+    {
+      "url": "http://fr33-m0ney-earn.com",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 68,
+      "correct": true,
+      "category": "scam-domain",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "DNS_FAILURE",
+        "NO_HTTPS"
+      ]
+    },
+    {
+      "url": "http://win-lottery-pakistan.xyz",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 70,
+      "correct": true,
+      "category": "scam-domain",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "DOMAIN_NOT_FOUND",
+        "SUSPICIOUS_KEYWORD",
+        "NO_HTTPS"
+      ]
+    },
+    {
+      "url": "http://crypto-investment-guaranteed.com",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 72,
+      "correct": true,
+      "category": "scam-investment",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "UNSECURED_HTTP",
+        "PAGE_NOT_FOUND",
+        "MISLEADING_DOMAIN"
+      ]
+    },
+    {
+      "url": "http://testsafebrowsing.appspot.com/s/phishing.html",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 55,
+      "correct": true,
+      "category": "known-phishing",
+      "indicators": [
+        "DNS_NO_NS_RECORDS",
+        "PASSWORD_FORM",
+        "LOGIN_FORM_PRESENT",
+        "PHISHING_CONTENT",
+        "NO_HTTPS"
+      ]
+    },
+    {
+      "url": "http://phishing.example.com",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 72,
+      "correct": true,
+      "category": "known-phishing",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "PAGE_NOT_FOUND",
+        "NO_HTTPS"
+      ]
+    },
+    {
+      "url": "http://hbl-com.tk",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 85,
+      "correct": true,
+      "category": "phishing-tld",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "DOMAIN_IMPERSONATION",
+        "UNREACHABLE_OR_NONEXISTENT_PAGE",
+        "NO_HTTPS"
+      ]
+    },
+    {
+      "url": "http://sbp-gov-pk.xyz",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 85,
+      "correct": true,
+      "category": "phishing-gov",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "DOMAIN_IMPERSONATION",
+        "DNS_FAILURE_OR_EMPTY_PAGE",
+        "NO_HTTPS"
+      ]
+    },
+    {
+      "url": "http://work-from-home-earn-50000.xyz",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 70,
+      "correct": true,
+      "category": "scam-job",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "DOMAIN_NOT_FOUND",
+        "JOB_OFFER_SUSPICION",
+        "NO_HTTPS"
+      ]
+    },
+    {
+      "url": "http://free-iphone-win.com",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 72,
+      "correct": true,
+      "category": "scam-prize",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "SUSPICIOUS_DOMAIN",
+        "PAGE_NOT_FOUND",
+        "NO_HTTPS"
+      ]
+    },
+    {
+      "url": "http://cheap-medicine-online-pk.xyz",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 72,
+      "correct": true,
+      "category": "scam-health",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "PAGE_NOT_FOUND",
+        "NO_HTTPS",
+        "SUSPICIOUS_TLD",
+        "MISLEADING_BRAND"
+      ]
+    },
+    {
+      "url": "http://192.168.1.1.phishing-site.com",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 72,
+      "correct": true,
+      "category": "suspicious-pattern",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "SUSPICIOUS_DOMAIN_NAME",
+        "NON_HTTPS",
+        "PAGE_NOT_FOUND",
+        "IP_LIKE_SUBDOMAIN"
+      ]
+    },
+    {
+      "url": "http://bit.ly/3fakePhish",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 70,
+      "correct": true,
+      "category": "url-shortener",
+      "indicators": [
+        "URL_SHORTENER",
+        "EMPTY_PAGE",
+        "NO_HTTPS",
+        "PAGE_NOT_FOUND"
+      ]
+    },
+    {
+      "url": "http://ehsaas-scheme-claim.xyz",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 85,
+      "correct": true,
+      "category": "phishing-gov",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "DOMAIN_NOT_FOUND",
+        "BRAND_IMPERSONATION",
+        "NO_HTTPS"
+      ]
+    },
+    {
+      "url": "http://nadra-verify-cn1c.com",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 85,
+      "correct": true,
+      "category": "phishing-gov",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "DOMAIN_IMPERSONATION",
+        "PAGE_NOT_FOUND",
+        "NO_HTTPS"
+      ]
+    },
+    {
+      "url": "http://bisp-payment-claim.net",
+      "expected": "malicious",
+      "actual": "malicious",
+      "riskScore": 85,
+      "correct": true,
+      "category": "phishing-gov",
+      "indicators": [
+        "DOMAIN_NOT_FOUND",
+        "HTTP_ERROR",
+        "FETCH_FAILED",
+        "DOMAIN_IMPERSONATION",
+        "NO_HTTPS",
+        "PAGE_NOT_FOUND"
+      ]
+    }
+  ]
+}

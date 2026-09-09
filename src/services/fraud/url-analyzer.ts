@@ -76,6 +76,19 @@ const TRUSTED_DOMAINS = [
   'daraz.pk', 'foodpanda.com.pk', 'careem.com',
   // Government / international orgs
   'gov.pk', 'who.int', 'un.org', 'imf.org', 'worldbank.org',
+  // Major news / media outlets
+  'bbc.com', 'bbc.co.uk', 'cnn.com', 'reuters.com', 'aljazeera.com',
+  'dawn.com', 'geo.tv', 'arynews.tv', 'express.pk', 'tribune.com.pk',
+  'thenews.com.pk', 'nation.com.pk', 'dailymail.co.uk', 'theguardian.com',
+  'nytimes.com', 'washingtonpost.com', 'wsj.com', 'ft.com', 'economist.com',
+  'aljazeera.net', 'middleeasteye.net',
+  // E-commerce / services
+  'ebay.com', 'etsy.com', 'walmart.com', 'target.com',
+  // Payment / finance
+  'paypal.com', 'stripe.com', 'wise.com', 'payoneer.com',
+  // Additional Pakistani domains
+  'sastodeal.com', 'olx.com.pk', 'pakwheels.com', 'zameen.com',
+  'sadapay.pk', 'nayapay.com',
 ];
 
 function isTrustedDomain(hostname: string): boolean {
@@ -529,12 +542,13 @@ export class UrlAnalyzer {
         };
       }
 
-      // If no NS records, suspicious
+      // If no NS records, slightly suspicious — but NS queries are unreliable in
+      // serverless environments (Vercel/AWS), so use LOW severity to avoid false positives
       if (!nsRecords || nsRecords.length === 0) {
         return {
           indicator: 'DNS_NO_NS_RECORDS',
-          severity: 'medium',
-          description: 'Domain has no name servers — may be newly registered',
+          severity: 'low',
+          description: 'Name server records could not be verified — may be due to serverless DNS limitations',
           evidence: `No NS records found for "${hostname}"`,
         };
       }
