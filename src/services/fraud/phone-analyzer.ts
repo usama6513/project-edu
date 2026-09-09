@@ -481,6 +481,99 @@ function detectRegion(country: CountryConfig, localNumber: string): PhoneAnalysi
 
 // calculateRiskScore — REMOVED: AI determines risk score from real evidence
 
+// ─── Phone Risk Floor — deterministic evidence-based minimums ────────────────
+// Prevents AI from under-scoring when hard evidence is strong (same pattern as URL analyzer)
+
+function calculatePhoneRiskFloor(
+  indicators: PhoneAnalysis['indicators'],
+  localNumber: string,
+  country: CountryConfig,
+  liveData?: import('./phone-lookup').LivePhoneData | null
+): { floorScore: number; floorLevel: PhoneAnalysis['riskLevel']; floorReason: string } {
+  const indicatorLabels = indicators.map(i => i.label.toLowerCase());
+  const hasIndicator = (text: string) => indicatorLabels.some(l => l.includes(text));
+
+  // Check scam prefix match
+  const isScamPrefix = country.scamPrefixes.some(p => localNumber.startsWith(p));
+  // Check premium rate
+  const isPremium = country.premiumPrefixes.some(p => localNumber.startsWith(p));
+  // Truecaller spam score
+  const spamScore = liveData?.truecallerSpamScore ?? 0;
+  // VoIP
+  const isVoIP = liveData?.isVoIP === true;
+  // Invalid format
+  const isInvalid = hasIndicator('format');
+  // Unverified landline
+  const isUnverifiedLandline = hasIndicator('unverified landline');
+
+  let floorScore = 0;
+  let floorReason = '';
+
+  // === CRITICAL TIER (80-92) ===
+  // Known scam prefix + high Truecaller spam score
+  if (isScamPrefix && spamScore >= 50) {
+    floorScore = 90;
+    floorReason = 'Known scam prefix + high Truecaller spam score';
+  }
+  // Truecaller spam score extremely high (75+)
+  else if (spamScore >= 75) {
+    floorScore = 85;
+    floorReason = `Truecaller spam score ${spamScore}/100 — extremely high`;
+  }
+
+  // === HIGH TIER (60-79) ===
+  // Known scam prefix
+  else if (isScamPrefix) {
+    floorScore = 75;
+    floorReason = 'Number starts with a known scam prefix';
+  }
+  // High Truecaller spam score (50-74)
+  else if (spamScore >= 50) {
+    floorScore = 72;
+    floorReason = `Truecaller spam score ${spamScore}/100 — high spam reports`;
+  }
+  // VoIP + invalid format
+  else if (isVoIP && isInvalid) {
+    floorScore = 65;
+    floorReason = 'VoIP number with invalid format — highly suspicious';
+  }
+
+  // === MEDIUM TIER (40-59) ===
+  // Premium rate number
+  else if (isPremium) {
+    floorScore = 55;
+    floorReason = 'Premium rate number — charges apply';
+  }
+  // Moderate Truecaller spam score (20-49)
+  else if (spamScore >= 20) {
+    floorScore = 50;
+    floorReason = `Truecaller spam score ${spamScore}/100 — moderate spam reports`;
+  }
+  // VoIP detected
+  else if (isVoIP) {
+    floorScore = 45;
+    floorReason = 'VoIP/virtual number — commonly used in scams';
+  }
+  // Invalid format + no live data (can't verify at all)
+  else if (isInvalid && !liveData) {
+    floorScore = 40;
+    floorReason = 'Invalid format with no live verification data';
+  }
+  // Unverified landline (could be scammer using landline)
+  else if (isUnverifiedLandline) {
+    floorScore = 35;
+    floorReason = 'Unverified landline — exercise caution';
+  }
+
+  const floorLevel: PhoneAnalysis['riskLevel'] =
+    floorScore >= 80 ? 'critical' :
+    floorScore >= 60 ? 'high' :
+    floorScore >= 40 ? 'medium' :
+    floorScore >= 20 ? 'low' : 'safe';
+
+  return { floorScore, floorLevel, floorReason };
+}
+
 export async function analyzePhoneNumber(input: string, liveData?: import('./phone-lookup').LivePhoneData | null): Promise<PhoneAnalysis> {
   const normalized = normalizeNumber(input);
   const { country, localNumber } = detectCountry(normalized);
@@ -591,7 +684,7 @@ export async function analyzePhoneNumber(input: string, liveData?: import('./pho
 
   indicators.push(...extraIndicators);
 
-  // AI CLASSIFICATION — AI is the sole judge for scam determination
+  // AI CLASSIFICATION — AI judges scam nature, but deterministic risk floor prevents under-scoring
   const evidence: Record<string, unknown> = {
     phoneNumber: input,
     normalizedNumber: normalized,
@@ -622,8 +715,16 @@ export async function analyzePhoneNumber(input: string, liveData?: import('./pho
     evidence,
   });
 
-  const riskScore = aiVerdict.riskScore;
-  const riskLevel = aiVerdict.riskLevel;
+  let riskScore = aiVerdict.riskScore;
+  let riskLevel = aiVerdict.riskLevel;
+
+  // DETERMINISTIC RISK FLOOR — hard evidence cannot be overridden by lenient AI
+  const { floorScore, floorLevel, floorReason } = calculatePhoneRiskFloor(indicators, localNumber, country, liveData);
+  if (floorScore > riskScore) {
+    riskScore = floorScore;
+    riskLevel = floorLevel;
+    indicators.push({ type: 'danger', label: 'Risk Floor Applied', value: floorReason });
+  }
 
   // Build verification platforms
   const platforms: string[] = [];
