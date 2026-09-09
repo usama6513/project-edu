@@ -610,6 +610,11 @@ function calculatePhoneRiskFloor(
     floorScore = 35;
     floorReason = 'Unverified landline — exercise caution';
   }
+  // No Truecaller data available — number has NOT been checked against spam databases
+  else if (!hasKnownSpam && spamScore === 0 && (!liveData?.truecallerName && liveData?.truecallerSpamScore === undefined)) {
+    floorScore = 20;
+    floorReason = 'No spam database check — Truecaller unavailable, number is UNVERIFIED';
+  }
 
   const floorLevel: PhoneAnalysis['riskLevel'] =
     floorScore >= 80 ? 'critical' :
@@ -740,6 +745,11 @@ export async function analyzePhoneNumber(input: string, liveData?: import('./pho
 
   indicators.push(...extraIndicators);
 
+  // Warn when Truecaller spam check failed — number is NOT fully verified
+  if (liveData && !liveData.truecallerName && liveData.truecallerSpamScore === undefined && !spamEntry) {
+    indicators.push({ type: 'warning', label: 'Spam Check Unavailable', value: 'Truecaller spam database unreachable — this number has NOT been checked against known scammer databases' });
+  }
+
   // AI CLASSIFICATION — AI judges scam nature, but deterministic risk floor prevents under-scoring
   const evidence: Record<string, unknown> = {
     phoneNumber: input,
@@ -818,22 +828,42 @@ export async function analyzePhoneNumber(input: string, liveData?: import('./pho
   let confidenceScore = 0;
   if (finalValid) { confidenceScore += 25; confidenceFactors.push('Valid number format'); }
   if (liveData) {
-    confidenceScore += 30; confidenceFactors.push('Live data verified');
-    if (liveData.carrier && liveData.carrier !== 'Unknown') { confidenceScore += 20; confidenceFactors.push('Carrier confirmed'); }
+    confidenceScore += 20; confidenceFactors.push('Live data verified');
+    if (liveData.carrier && liveData.carrier !== 'Unknown') { confidenceScore += 15; confidenceFactors.push('Carrier confirmed'); }
     if (liveData.isRegistered) { confidenceScore += 10; confidenceFactors.push('Number is registered'); }
+    // Truecaller spam check bonus/penalty
+    if (liveData.truecallerName || liveData.truecallerSpamScore !== undefined) {
+      confidenceScore += 20; confidenceFactors.push('Spam database checked');
+    } else {
+      confidenceScore -= 20; confidenceFactors.push('⚠️ Spam check unavailable');
+    }
   } else {
     confidenceScore += 15; confidenceFactors.push('Prefix-based detection only');
   }
   if (finalNetwork.name !== 'Unknown') { confidenceScore += 15; confidenceFactors.push('Network identified'); }
   const confidenceLevel = confidenceScore >= 80 ? 'high' : confidenceScore >= 50 ? 'medium' : 'low';
 
+  // Check if Truecaller spam check is available
+  const truecallerAvailable = !!(liveData?.truecallerName || liveData?.truecallerSpamScore !== undefined);
   const isLandline = input.startsWith('0') && !input.startsWith('03');
   const detailedAnalysis = {
     numberValidity: finalValid ? `✅ Number format is valid for ${country.name}` : `❌ Number format is invalid for ${country.name}`,
     networkReliability: liveData?.carrier && liveData.carrier !== 'Unknown' ? `✅ Network confirmed via live lookup: ${liveData.carrier}` : `⚠️ Network detected via prefix matching: ${finalNetwork.name} (may be ported)`,
     locationInfo: isLandline ? `✅ Landline registered in: ${finalRegion.city}` : `ℹ️ Mobile number — registered nationwide (not tied to specific city)`,
-    riskAssessment: riskLevel === 'safe' || riskLevel === 'low' ? `✅ Low risk score (${riskScore}/100) — appears safe` : riskLevel === 'medium' ? `⚠️ Medium risk score (${riskScore}/100) — exercise caution` : `❌ High risk score (${riskScore}/100) — suspicious activity detected`,
-    recommendation: riskLevel === 'safe' || riskLevel === 'low' ? 'This number appears safe. Standard precautions apply — never share OTPs or personal information.' : riskLevel === 'medium' ? 'Verify the sender identity before sharing any personal information.' : 'Do NOT engage with this number. Block and report if suspicious.',
+    riskAssessment: !truecallerAvailable && !spamEntry && (riskLevel === 'safe' || riskLevel === 'low')
+      ? `⚠️ Low risk score (${riskScore}/100) but UNVERIFIED — Truecaller spam check unavailable, this number has NOT been checked against scammer databases`
+      : riskLevel === 'safe' || riskLevel === 'low'
+        ? `✅ Low risk score (${riskScore}/100) — appears safe`
+        : riskLevel === 'medium'
+          ? `⚠️ Medium risk score (${riskScore}/100) — exercise caution`
+          : `❌ High risk score (${riskScore}/100) — suspicious activity detected`,
+    recommendation: !truecallerAvailable && !spamEntry && (riskLevel === 'safe' || riskLevel === 'low')
+      ? 'Truecaller spam database is currently unreachable. This number has NOT been verified against known scammer databases. Verify the caller through other means before trusting this number.'
+      : riskLevel === 'safe' || riskLevel === 'low'
+        ? 'This number appears safe. Standard precautions apply — never share OTPs or personal information.'
+        : riskLevel === 'medium'
+          ? 'Verify the sender identity before sharing any personal information.'
+          : 'Do NOT engage with this number. Block and report if suspicious.',
   };
 
   return {
