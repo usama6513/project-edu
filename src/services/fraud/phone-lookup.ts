@@ -1130,8 +1130,111 @@ async function lookupViewCaller(phoneNumber: string): Promise<Partial<LivePhoneD
 }
 
 /**
+ * Generic POST /v2.php Truecaller provider adapter.
+ * Works with any RapidAPI Truecaller provider using the POST form shape:
+ *   POST https://{host}/v2.php  body: phone=<digits>&countryCode=<iso>
+ * Response: {success: true, data: {name, phone}}
+ */
+async function lookupV2PhpGeneric(
+  phoneNumber: string,
+  host: string,
+  providerTag: string
+): Promise<Partial<LivePhoneData> & {
+  truecallerName?: string;
+  truecallerSpamScore?: number;
+  truecallerType?: string;
+  truecallerVerified?: boolean;
+} | null> {
+  const keys = getKeyPool('primary');
+  if (keys.length === 0) return null;
+
+  let number = phoneNumber;
+  let countryCode = 'pk';
+  if (!number.startsWith('+')) {
+    if (number.startsWith('0')) number = '+92' + number.slice(1);
+    else number = '+' + number;
+  }
+  const cleanForCountry = number.replace('+', '');
+  if (cleanForCountry.startsWith('92')) countryCode = 'pk';
+  else if (cleanForCountry.startsWith('91')) countryCode = 'in';
+  else if (cleanForCountry.startsWith('1')) countryCode = 'us';
+  else if (cleanForCountry.startsWith('44')) countryCode = 'gb';
+  else if (cleanForCountry.startsWith('971')) countryCode = 'ae';
+  else if (cleanForCountry.startsWith('966')) countryCode = 'sa';
+  else if (cleanForCountry.startsWith('86')) countryCode = 'cn';
+  else if (cleanForCountry.startsWith('61')) countryCode = 'au';
+
+  for (const apiKey of keys) {
+    if (isKeyExhausted(apiKey, providerTag)) {
+      console.log(`[${providerTag}] Skipping exhausted key ...${apiKey.slice(-6)}`);
+      continue;
+    }
+
+    try {
+      const formData = new URLSearchParams();
+      formData.append('phone', cleanForCountry);
+      formData.append('countryCode', countryCode);
+
+      const response = await fetch(
+        `https://${host}/v2.php`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-RapidAPI-Key': apiKey,
+            'X-RapidAPI-Host': host,
+          },
+          body: formData.toString(),
+          signal: AbortSignal.timeout(10000),
+        }
+      );
+
+      updateRateState(apiKey, response.headers, response.status, providerTag);
+
+      if (!response.ok) {
+        console.log(`[${providerTag}] Key ...${apiKey.slice(-6)} response not OK:`, response.status);
+        continue;
+      }
+
+      const data = await response.json();
+      console.log(`[${providerTag}] Raw response:`, JSON.stringify(data).substring(0, 500));
+
+      const resultData = data.data || data;
+      const name = resultData.name || resultData.displayName || resultData.owner ||
+                   resultData.data?.name || resultData.result?.name ||
+                   (Array.isArray(resultData.data) && resultData.data[0]?.name) ||
+                   (Array.isArray(resultData.addresses) && resultData.addresses[0]?.name) ||
+                   undefined;
+      const spamScore = resultData.spamScore ?? resultData.spam_score ?? resultData.score ?? resultData.data?.spamScore ?? 0;
+      const numberType = resultData.numberType || resultData.type || resultData.phoneType || resultData.data?.numberType || undefined;
+      const isVerified = resultData.verified === true || resultData.isVerified === true || resultData.data?.verified === true || false;
+
+      // Skip useless results like "Unknown"
+      if (!name || name === 'Unknown' || name === 'unknown') {
+        console.log(`[${providerTag}] Key ...${apiKey.slice(-6)}: No usable name found`);
+        continue;
+      }
+
+      console.log(`[${providerTag}] Parsed - Name: ${name}, Spam: ${spamScore}, Type: ${numberType}`);
+
+      return {
+        truecallerName: name,
+        truecallerSpamScore: spamScore,
+        truecallerType: numberType,
+        truecallerVerified: isVerified,
+        source: 'Truecaller',
+      };
+    } catch (error) {
+      console.error(`[${providerTag}] Key ...${apiKey.slice(-6)} Error:`, error instanceof Error ? error.message : 'Unknown error');
+      continue;
+    }
+  }
+  return null;
+}
+
+/**
  * Smart Truecaller cascade with cache + multi-key + multi-endpoint fallback.
- * Cache → ViewCaller (NEW) → Direct → Primary → Backup → Tertiary → API3 → API4 → API11 → API12 → API9 → Eyecon
+ * Cache → NewProviders (api5, api6, mega-api1, api-mega) → ViewCaller → Direct → Primary → Backup → Tertiary → API3 → API4 → API11 → API12 → API9 → Eyecon
  */
 async function lookupTruecallerWithCache(phoneNumber: string): Promise<Partial<LivePhoneData> & {
   truecallerName?: string;
@@ -1155,8 +1258,12 @@ async function lookupTruecallerWithCache(phoneNumber: string): Promise<Partial<L
   }
   if (cached) truecallerCache.delete(cacheKey); // expired
 
-  // Cascade: ViewCaller (NEW, active) → Direct → Primary → Backup → Tertiary → API3 → API4 → API11 → API12 → API9 → Eyecon
-  const result = await lookupViewCaller(phoneNumber)
+  // Cascade: New active providers (fresh quotas) → ViewCaller → Direct → Primary → Backup → Tertiary → API3 → API4 → API11 → API12 → API9 → Eyecon
+  const result = await lookupV2PhpGeneric(phoneNumber, 'truecaller-api5.p.rapidapi.com', 'tc-api5')
+    ?? await lookupV2PhpGeneric(phoneNumber, 'truecaller-api6.p.rapidapi.com', 'tc-api6')
+    ?? await lookupV2PhpGeneric(phoneNumber, 'truecaller-mega-api1.p.rapidapi.com', 'tc-mega-api1')
+    ?? await lookupV2PhpGeneric(phoneNumber, 'truecaller-api-mega.p.rapidapi.com', 'tc-api-mega')
+    ?? await lookupViewCaller(phoneNumber)
     ?? await lookupTruecallerDirect(phoneNumber)
     ?? await lookupTruecaller(phoneNumber)
     ?? await lookupTruecallerBackup(phoneNumber)
