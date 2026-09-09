@@ -1039,8 +1039,99 @@ async function lookupTruecallerApi9(phoneNumber: string): Promise<Partial<LivePh
 }
 
 /**
+ * ViewCaller — NEW active Truecaller provider on RapidAPI
+ * GET /api/v1/search?code={dialCode}&number={significantNumber}
+ * Get key: https://rapidapi.com/user4565456456/api/viewcaller
+ */
+async function lookupViewCaller(phoneNumber: string): Promise<Partial<LivePhoneData> & {
+  truecallerName?: string;
+  truecallerSpamScore?: number;
+  truecallerType?: string;
+  truecallerVerified?: boolean;
+} | null> {
+  const keys = getKeyPool('primary');
+  if (keys.length === 0) return null;
+
+  // Normalize number
+  let number = phoneNumber;
+  if (!number.startsWith('+')) {
+    if (number.startsWith('0')) number = '+92' + number.slice(1);
+    else number = '+' + number;
+  }
+  const fullDigits = number.replace('+', '');
+
+  // Extract dialing code and significant number
+  const dialCodes = ['92', '91', '1', '44', '971', '966', '86', '61', '49', '33', '81', '90'];
+  let dialCode = '92';
+  let significant = fullDigits.slice(2);
+  for (const dc of dialCodes) {
+    if (fullDigits.startsWith(dc)) {
+      dialCode = dc;
+      significant = fullDigits.slice(dc.length);
+      break;
+    }
+  }
+
+  for (const apiKey of keys) {
+    if (isKeyExhausted(apiKey, 'viewcaller')) continue;
+
+    try {
+      const response = await fetch(
+        `https://viewcaller.p.rapidapi.com/api/v1/search?code=${dialCode}&number=${significant}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-RapidAPI-Key': apiKey,
+            'X-RapidAPI-Host': 'viewcaller.p.rapidapi.com',
+          },
+          signal: AbortSignal.timeout(10000),
+        }
+      );
+
+      updateRateState(apiKey, response.headers, response.status, 'viewcaller');
+
+      if (!response.ok) {
+        console.log(`[ViewCaller] Key ...${apiKey.slice(-6)} response not OK:`, response.status);
+        continue;
+      }
+
+      const data = await response.json();
+      console.log('[ViewCaller] Raw response:', JSON.stringify(data).substring(0, 500));
+
+      if (!data.status || !Array.isArray(data.data) || data.data.length === 0) {
+        console.log(`[ViewCaller] Key ...${apiKey.slice(-6)}: No data found`);
+        continue;
+      }
+
+      const entry = data.data[0];
+      const name = entry.name || undefined;
+      const spamScore = entry.spamCounter ?? 0;
+      const isSpam = entry.spam === true;
+
+      if (!name && spamScore === 0) {
+        console.log(`[ViewCaller] Key ...${apiKey.slice(-6)}: No name or spam`);
+        continue;
+      }
+
+      console.log(`[ViewCaller] Parsed - Name: ${name}, Spam: ${spamScore}, isSpam: ${isSpam}`);
+
+      return {
+        truecallerName: name,
+        truecallerSpamScore: spamScore,
+        truecallerType: 'mobile',
+        truecallerVerified: false,
+        source: 'ViewCaller',
+      };
+    } catch (error) {
+      console.log(`[ViewCaller] Key ...${apiKey.slice(-6)} error:`, error instanceof Error ? error.message : 'unknown');
+    }
+  }
+  return null;
+}
+
+/**
  * Smart Truecaller cascade with cache + multi-key + multi-endpoint fallback.
- * Cache → Direct (search5-noneu × all IDs) → Primary (api13 × all keys) → Backup (data2 × all keys → v15/v46 × all keys) → Tertiary keys → API3 → API4 → API11 → API12 → API9 → Eyecon
+ * Cache → ViewCaller (NEW) → Direct → Primary → Backup → Tertiary → API3 → API4 → API11 → API12 → API9 → Eyecon
  */
 async function lookupTruecallerWithCache(phoneNumber: string): Promise<Partial<LivePhoneData> & {
   truecallerName?: string;
@@ -1064,8 +1155,9 @@ async function lookupTruecallerWithCache(phoneNumber: string): Promise<Partial<L
   }
   if (cached) truecallerCache.delete(cacheKey); // expired
 
-  // Cascade: Direct API → Primary → Backup → Tertiary → API3 → API4 → API11 → Eyecon
-  const result = await lookupTruecallerDirect(phoneNumber)
+  // Cascade: ViewCaller (NEW, active) → Direct → Primary → Backup → Tertiary → API3 → API4 → API11 → API12 → API9 → Eyecon
+  const result = await lookupViewCaller(phoneNumber)
+    ?? await lookupTruecallerDirect(phoneNumber)
     ?? await lookupTruecaller(phoneNumber)
     ?? await lookupTruecallerBackup(phoneNumber)
     ?? await lookupTruecallerTertiary(phoneNumber)
